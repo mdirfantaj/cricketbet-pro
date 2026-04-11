@@ -1,0 +1,31 @@
+{
+  "name": "betpro-backend",
+  "version": "1.1.0",
+  "description": "Production-grade betting platform backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "lowdb": "^7.0.1",
+    "uuid": "^9.0.1",
+    "joi": "^17.11.0",
+    "dotenv": "^16.3.1",
+    "socket.io": "^4.7.5",
+    "morgan": "^1.10.0",
+    "winston": "^3.11.0",
+    "compression": "^1.7.4",
+    "helmet-csp": "^3.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+  }
