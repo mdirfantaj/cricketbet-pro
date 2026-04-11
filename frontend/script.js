@@ -1,5 +1,7 @@
 const API = "http://localhost:3000/api";
-let user = null;
+
+let user = JSON.parse(localStorage.getItem("user"));
+let logoutTimer;
 
 // 🔐 LOGIN
 async function login() {
@@ -21,8 +23,15 @@ async function login() {
     }
 
     user = d.user;
-    localStorage.setItem("token", d.token); // ✔ FIXED
+
+    localStorage.setItem("token", d.token);
+    localStorage.setItem("user", JSON.stringify(d.user));
+    localStorage.setItem("role", d.user.role);
+
     document.getElementById("bal").innerText = user.balance;
+
+    loadMatches();   // 🔥 FIX
+    resetTimer();    // 🔥 AUTO LOGOUT START
 
   } catch {
     alert("Server not responding");
@@ -67,9 +76,9 @@ async function bet(id, odds) {
   let amt = prompt("Enter Amount");
   if (!amt) return;
 
-  const token = localStorage.getItem("token"); // ✔ FIXED
+  const token = localStorage.getItem("token");
 
-  await fetch(API + "/bet", {
+  let res = await fetch(API + "/bet", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -82,16 +91,28 @@ async function bet(id, odds) {
     })
   });
 
+  if (!res.ok) {
+    alert("Bet failed");
+    return;
+  }
+
   alert("Bet placed!");
 }
 
-// 🎯 ODDS
+// 🎯 ODDS (ADMIN ONLY)
 async function updateOdds() {
+  let role = localStorage.getItem("role");
+
+  if (role !== "admin") {
+    alert("Only admin can change odds");
+    return;
+  }
+
   let matchId = document.getElementById("mid").value;
   let back = document.getElementById("back").value;
   let lay = document.getElementById("lay").value;
 
-  const token = localStorage.getItem("token"); // ✔ FIXED
+  const token = localStorage.getItem("token");
 
   await fetch(API + "/odds", {
     method: "POST",
@@ -105,6 +126,32 @@ async function updateOdds() {
   alert("Updated!");
 }
 
-// 🔄 AUTO REFRESH
+// 🔥 AUTO LOGOUT SYSTEM
+
+function resetTimer() {
+  clearTimeout(logoutTimer);
+
+  logoutTimer = setTimeout(() => {
+    logout();
+  }, 10 * 60 * 1000); // 10 min
+}
+
+function logout() {
+  user = null;
+
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("role");
+
+  alert("Session expired! Please login again.");
+  location.reload();
+}
+
+// activity tracking
+document.addEventListener("click", resetTimer);
+document.addEventListener("keypress", resetTimer);
+document.addEventListener("mousemove", resetTimer);
+
+// 🔄 AUTO START
 loadMatches();
 setInterval(loadMatches, 5000);
