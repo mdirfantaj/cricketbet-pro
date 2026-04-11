@@ -1,19 +1,17 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: linear-gradient(135deg, #0f0f0f, #1a1a2e);
-  color: #ffffff;
+  color: white;
   text-align: center;
   margin: 0;
   padding: 20px;
 }
 
-/* Title */
 h2, h3 {
   color: #00ffcc;
   text-shadow: 0 0 10px #00ffcc;
 }
 
-/* Inputs */
 input {
   display: block;
   margin: 10px auto;
@@ -23,10 +21,8 @@ input {
   border: 1px solid #00ffcc;
   background: #111;
   color: white;
-  outline: none;
 }
 
-/* Buttons */
 button {
   padding: 12px 18px;
   background: linear-gradient(90deg, #00ffcc, #0066ff);
@@ -35,29 +31,29 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
-  box-shadow: 0 0 10px #00ffcc;
+  margin: 5px;
 }
 
 button:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 20px #00ffcc;
 }
 
-/* Cards (matches & bets) */
 div {
   margin: 10px auto;
   padding: 12px;
-  width: 80%;
-  background: rgba(255, 255, 255, 0.05);
+  width: 85%;
+  background: rgba(255,255,255,0.05);
   border: 1px solid #00ffcc;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,255,204,0.2);
 }
 
-/* Balance highlight */
-#bal {
-  color: #00ffcc;
-  font-size: 22px;
-  font-weight: bold;
+/* 📱 MOBILE FIX */
+@media (max-width: 600px) {
+  input {
+    width: 90%;
+  }
+
+  div {
+    width: 95%;
+  }
 }
