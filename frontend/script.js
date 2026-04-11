@@ -21,6 +21,7 @@ async function login() {
     }
 
     user = d.user;
+    localStorage.setItem("token", d.token); // ✔ FIXED
     document.getElementById("bal").innerText = user.balance;
 
   } catch {
@@ -66,7 +67,7 @@ async function bet(id, odds) {
   let amt = prompt("Enter Amount");
   if (!amt) return;
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token"); // ✔ FIXED
 
   await fetch(API + "/bet", {
     method: "POST",
@@ -81,8 +82,6 @@ async function bet(id, odds) {
     })
   });
 
-
-
   alert("Bet placed!");
 }
 
@@ -92,9 +91,14 @@ async function updateOdds() {
   let back = document.getElementById("back").value;
   let lay = document.getElementById("lay").value;
 
+  const token = localStorage.getItem("token"); // ✔ FIXED
+
   await fetch(API + "/odds", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token
+    },
     body: JSON.stringify({ matchId, back, lay })
   });
 
