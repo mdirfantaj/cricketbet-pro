@@ -7,22 +7,22 @@
 <body>
 
 <h2>Login</h2>
-<input id="email">
-<input id="pass">
+<input id="email" placeholder="Email">
+<input id="pass" placeholder="Password">
 <button onclick="login()">Login</button>
 
 <h2>Balance: ₹<span id="bal">0</span></h2>
 
 <h3>Matches</h3>
-<div id="matches"></div>
+<div id="matches">Loading matches...</div>
 
 <h3>Bets</h3>
 <div id="bets"></div>
 
 <h3>Admin</h3>
 <input id="mid" placeholder="match id">
-<input id="back">
-<input id="lay">
+<input id="back" placeholder="back odds">
+<input id="lay" placeholder="lay odds">
 <button onclick="updateOdds()">Update</button>
 
 <script src="script.js"></script>
