@@ -1,30 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Bet Pro</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetPro - Professional Sportsbook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">🏏 BetPro</div>
+            <div class="header-actions" id="headerActions">
+                <button class="btn btn-primary" onclick="auth.logout()" id="logoutBtn" style="display: none;">
+                    Logout
+                </button>
+            </div>
+        </header>
 
-<h2>Login</h2>
-<input id="email" placeholder="Email">
-<input id="pass" placeholder="Password">
-<button onclick="login()">Login</button>
+        <div class="dashboard-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Login Section -->
+                <div class="card login-section" id="loginSection">
+                    <div class="card-header">
+                        <h2 class="card-title">Welcome to BetPro</h2>
+                        <div class="card-badge">Secure Login</div>
+                    </div>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="input-group mb-4">
+                                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                            </div>
+                            <div class="input-group mb-4">
+                                <input type="password" id="pass" class="form-input" placeholder="Enter your password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-full" id="loginBtn">
+                                <span id="loginText">Sign In</span>
+                                <span id="loginSpinner" class="hidden">Loading...</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
 
-<h2>Balance: ₹<span id="bal">0</span></h2>
+                <!-- Balance Card -->
+                <div class="card balance-card hidden" id="balanceSection">
+                    <div class="balance-currency">Available Balance</div>
+                    <div class="balance-amount" id="bal">₹0</div>
+                    <div class="card-badge" id="userRole">User</div>
+                </div>
 
-<h3>Matches</h3>
-<div id="matches">Loading matches...</div>
+                <!-- Live Matches -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Live Matches</h3>
+                        <div class="card-badge" id="matchesStatus">Loading...</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="matches-grid" id="matches">
+                            <div class="loading">
+                                <div class="skeleton" style="width: 300px; height: 120px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<h3>Bets</h3>
-<div id="bets"></div>
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Bets History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Bets</h3>
+                        <div class="card-badge">0 Active</div>
+                    </div>
+                    <div class="card-body bets-list" id="bets">
+                        <div class="text-center py-8" style="color: var(--gray-500);">
+                            No bets placed yet
+                        </div>
+                    </div>
+                </div>
 
-<h3>Admin</h3>
-<input id="mid" placeholder="match id">
-<input id="back" placeholder="back odds">
-<input id="lay" placeholder="lay odds">
-<button onclick="updateOdds()">Update</button>
+                <!-- Admin Panel -->
+                <div class="card admin-panel" id="adminPanel">
+                    <div class="card-header">
+                        <h3 class="card-title">Admin: Odds Control</h3>
+                        <div class="card-badge">Admin Only</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="admin-grid">
+                            <div class="input-group">
+                                <input id="mid" class="form-input" placeholder="Match ID" required>
+                            </div>
+                            <div class="input-group">
+                                <input id="back" type="number" step="0.01" class="form-input" placeholder="Back Odds">
+                            </div>
+                            <div class="input-group">
+                                <input id="lay" type="number" step="0.01" class="form-input" placeholder="Lay Odds">
+                            </div>
+                            <button class="btn btn-primary w-full mt-4" onclick="updateOdds()">
+                                Update Odds
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script src="script.js"></script>
+    <!-- Notifications -->
+    <div class="notifications" id="notifications"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
