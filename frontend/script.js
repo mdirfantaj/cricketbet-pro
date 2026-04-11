@@ -23,19 +23,20 @@ async function login() {
     user = d.user;
     document.getElementById("bal").innerText = user.balance;
 
-  } catch (err) {
-    console.log("Login error:", err);
-    alert("Server error");
+  } catch {
+    alert("Server not responding");
   }
 }
 
-// 🏏 LOAD MATCHES
+// 🏏 MATCHES
 async function loadMatches() {
   try {
+    let div = document.getElementById("matches");
+    div.innerHTML = "Loading...";
+
     let r = await fetch(API + "/matches");
     let data = await r.json();
 
-    let div = document.getElementById("matches");
     div.innerHTML = "";
 
     data.forEach(m => {
@@ -43,25 +44,26 @@ async function loadMatches() {
         <div>
           <b>${m.team1} vs ${m.team2}</b><br>
           BACK: ${m.odds.back}
-          <button onclick="bet('${m.id}', ${m.odds.back})">Bet</button>
+          <button onclick="bet('${m.id}', ${m.odds.back})" ${!user ? "disabled" : ""}>
+            Bet
+          </button>
         </div>
       `;
     });
 
-  } catch (err) {
-    console.log("Match load error:", err);
+  } catch {
+    document.getElementById("matches").innerHTML = "Error loading matches";
   }
 }
 
 // 💰 BET
 async function bet(id, odds) {
   if (!user) {
-    alert("Please login first");
+    alert("Login first");
     return;
   }
 
   let amt = prompt("Enter Amount");
-
   if (!amt) return;
 
   await fetch(API + "/bet", {
@@ -78,7 +80,7 @@ async function bet(id, odds) {
   alert("Bet placed!");
 }
 
-// 🎯 UPDATE ODDS (ADMIN)
+// 🎯 ODDS
 async function updateOdds() {
   let matchId = document.getElementById("mid").value;
   let back = document.getElementById("back").value;
@@ -90,9 +92,9 @@ async function updateOdds() {
     body: JSON.stringify({ matchId, back, lay })
   });
 
-  alert("Odds updated!");
+  alert("Updated!");
 }
 
-// 🔄 AUTO REFRESH MATCHES
+// 🔄 AUTO REFRESH
 loadMatches();
 setInterval(loadMatches, 5000);
