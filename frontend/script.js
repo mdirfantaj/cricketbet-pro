@@ -66,16 +66,22 @@ async function bet(id, odds) {
   let amt = prompt("Enter Amount");
   if (!amt) return;
 
+  const token = localStorage.getItem("token");
+
   await fetch(API + "/bet", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token
+    },
     body: JSON.stringify({
-      userId: user.id,
       matchId: id,
       amount: amt,
       odds
     })
   });
+
+
 
   alert("Bet placed!");
 }
