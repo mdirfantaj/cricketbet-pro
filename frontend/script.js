@@ -107,7 +107,7 @@ const auth = {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       
-     ui.updateUI();
+      ui.updateUI();
       loadMatches();
       resetIdleTimer();
       
@@ -121,7 +121,7 @@ const auth = {
   logout() {
     utils.clearAuth();
     showNotification('Session expired. Please login again.', 'warning');
-   ui.updateUI();
+    ui.updateUI();
     window.location.reload();
   }
 };
@@ -270,12 +270,12 @@ function init() {
     state.user = JSON.parse(savedUser);
     state.isAuthenticated = true;
     state.balance = state.user.balance;
-   ui.updateUI();
+    ui.updateUI();
     loadMatches();
     setupEventListeners();
     resetIdleTimer();
   } else {
-   ui.updateUI();
+    ui.updateUI();
   }
   
   // Better polling - only when authenticated + error backoff
