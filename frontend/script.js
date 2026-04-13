@@ -1,6 +1,6 @@
 // config.js - Environment-aware
 const CONFIG = {
-  API: import.meta.env.VITE_API_URL || 'https://api.yourapp.com/api',
+  API: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   IDLE_TIMEOUT: 10 * 60 * 1000,
   POLL_INTERVAL: 10000
 };
@@ -107,7 +107,7 @@ const auth = {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       
-      updateUI();
+     ui. updateUI();
       loadMatches();
       resetIdleTimer();
       
@@ -121,7 +121,7 @@ const auth = {
   logout() {
     utils.clearAuth();
     showNotification('Session expired. Please login again.', 'warning');
-    updateUI();
+   ui. updateUI();
     window.location.reload();
   }
 };
@@ -270,12 +270,12 @@ function init() {
     state.user = JSON.parse(savedUser);
     state.isAuthenticated = true;
     state.balance = state.user.balance;
-    updateUI();
+   ui. updateUI();
     loadMatches();
     setupEventListeners();
     resetIdleTimer();
   } else {
-    updateUI();
+   ui. updateUI();
   }
   
   // Better polling - only when authenticated + error backoff
