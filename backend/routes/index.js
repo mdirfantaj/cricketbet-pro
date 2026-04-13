@@ -44,7 +44,7 @@ router.post('/login', [
 });
 
 // Public Routes
-router.get('/matches', async (req, res) => {
+router.get('/matches', authMiddleware, async (req, res) => {
     try {
         const matches = await db.getMatches();
         res.json(matches);
