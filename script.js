@@ -1,5 +1,5 @@
 const CONFIG = {
-  API: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  API: "https://cricketbet-pro-lry0.onrender.com/api",
   IDLE_TIMEOUT: 10 * 60 * 1000,
   POLL_INTERVAL: 10000
 };
