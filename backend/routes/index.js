@@ -73,7 +73,7 @@ router.post('/bet', authMiddleware, [
     body('odds')
 ]), async (req, res) => {
     try {
-        const { matchId, amount, odds, team } = req.body;
+        const { matchId, amount, team } = req.body;
         const parsedAmount = Number(amount);
 
         const user = await User.findById(req.user.userId);
@@ -90,7 +90,9 @@ router.post('/bet', authMiddleware, [
             return res.status(400).json({ error: 'Insufficient balance' });
         }
 
-        // Deduct balance safely
+        // 🔥 SAFE ODDS (NO FRONTEND HACK)
+        const odds = match.finalOdds.back;
+
         await User.findByIdAndUpdate(user._id, {
             $inc: { balance: -parsedAmount }
         });
@@ -99,7 +101,7 @@ router.post('/bet', authMiddleware, [
             userId: user._id,
             matchId,
             amount: parsedAmount,
-            odds,
+            odds: odds,
             team,
             status: "active",
             payout: parsedAmount * odds
@@ -114,7 +116,7 @@ router.post('/bet', authMiddleware, [
 
 
 // =========================
-// 🔥 ODDS UPDATE (ADMIN FIXED)
+// 🔥 ODDS UPDATE (ADMIN)
 // =========================
 router.post('/odds', authMiddleware, roleMiddleware(['admin']), [
     body('matchId').notEmpty(),
@@ -160,7 +162,7 @@ router.get('/bets', authMiddleware, async (req, res) => {
 
 
 // =========================
-// 🔥 ADMIN CREDIT (FIXED SAFE)
+// 🔥 ADMIN CREDIT
 // =========================
 router.post('/admin/credit', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
     try {
@@ -188,15 +190,15 @@ router.post('/result', authMiddleware, roleMiddleware(['admin']), async (req, re
     try {
         const { matchId, winner } = req.body;
 
-        const bets = await Bet.find({ matchId });
-
-        if (!bets.length) {
-            return res.json({ message: 'No bets found' });
+        const match = await Match.findById(matchId);
+        if (match?.winner) {
+            return res.status(400).json({ error: 'Result already declared' });
         }
+
+        const bets = await Bet.find({ matchId });
 
         for (let bet of bets) {
             const user = await User.findById(bet.userId);
-
             if (!user) continue;
 
             if (bet.team === winner) {
