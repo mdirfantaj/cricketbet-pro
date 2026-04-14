@@ -7,7 +7,7 @@ const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');          // ✅ logging
 const compression = require('compression'); // ✅ speed
 const routes = require('./routes');
-const { initializeDatabase } = require('./db');
+const connectDB = require('./db'); // ✅ FIXED (MongoDB connect)
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,10 +19,10 @@ app.use(cors({
     credentials: true
 }));
 
-// ✅ Logging (NEW)
+// Logging
 app.use(morgan('dev'));
 
-// ✅ Compression (NEW)
+// Compression
 app.use(compression());
 
 // Rate Limiting
@@ -37,8 +37,8 @@ app.use('/api/', limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Initialize Database
-initializeDatabase();
+// ❌ REMOVED initializeDatabase()
+// ✔ MongoDB connect added properly
 
 // Routes
 app.use('/api', routes);
@@ -62,7 +62,9 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(PORT, () => {
+// 🚀 START SERVER + DB CONNECT
+app.listen(PORT, async () => {
+    await connectDB(); // ✅ MongoDB connect here
     console.log(`🚀 BetPro Backend running on port ${PORT}`);
     console.log(`📊 Health check: http://localhost:${PORT}/health`);
 });
