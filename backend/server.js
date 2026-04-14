@@ -27,13 +27,13 @@ app.use(morgan('dev'));
 // 🔥 SPEED
 app.use(compression());
 
-// 🔥 RATE LIMIT
+// 🔥 RATE LIMIT (GLOBAL SAFE MODE)
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
     message: { error: 'Too many requests, please try again later.' }
 });
-app.use('/api/', limiter);
+app.use(limiter);
 
 // 🔥 BODY PARSER
 app.use(express.json({ limit: '10mb' }));
@@ -66,14 +66,15 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 🚀 START SERVER (PRODUCTION SAFE)
+// 🚀 START SERVER
 const startServer = async () => {
     try {
-        await connectDB(); // 🔥 FIRST DB CONNECT
+        await connectDB();
+        console.log("✅ Database Connected Successfully");
 
         app.listen(PORT, () => {
-            console.log(`🚀 BetPro Backend running on port ${PORT}`);
-            console.log(`📊 Health check: http://localhost:${PORT}/health`);
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`📊 Health: http://localhost:${PORT}/health`);
         });
 
     } catch (err) {
