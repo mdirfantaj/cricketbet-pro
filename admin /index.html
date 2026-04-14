@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetPro - Professional Sportsbook</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">🏏 BetPro</div>
+
+        <div class="header-actions">
+            <button class="btn btn-primary hidden" id="logoutBtn" onclick="auth.logout()">
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <div class="dashboard-grid">
+
+        <!-- MAIN -->
+        <div class="main-content">
+
+            <!-- LOGIN -->
+            <div class="card login-section" id="loginSection">
+                <div class="card-header">
+                    <h2 class="card-title">Welcome to BetPro</h2>
+                </div>
+
+                <div class="card-body">
+                    <form id="loginForm">
+
+                        <input type="email" id="email" class="form-input" placeholder="Enter email" required>
+
+                        <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+
+                        <button type="submit" class="btn btn-primary w-full" id="loginBtn">
+                            Sign In
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+
+            <!-- BALANCE -->
+            <div class="card balance-card hidden" id="balanceSection">
+                <div class="balance-currency">Available Balance</div>
+                <div class="balance-amount" id="bal">₹0</div>
+                <div class="card-badge" id="userRole">User</div>
+            </div>
+
+            <!-- MATCHES -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Live Matches</h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="matches-grid" id="matches">
+                        No matches available
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+
+            <!-- BETS -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Bets</h3>
+                </div>
+
+                <div class="card-body bets-list" id="bets">
+                    No bets yet
+                </div>
+            </div>
+
+            <!-- ========================= -->
+            <!-- 🔥 ADMIN PANEL (ODDS + MATCH CONTROL) -->
+            <!-- ========================= -->
+            <div class="card hidden" id="adminPanel">
+
+                <div class="card-header">
+                    <h3 class="card-title">Admin Panel</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <input id="mid" class="form-input" placeholder="Match ID">
+
+                    <input id="back" type="number" step="0.01" class="form-input" placeholder="Back Odds">
+
+                    <input id="lay" type="number" step="0.01" class="form-input" placeholder="Lay Odds">
+
+                    <button class="btn btn-primary w-full" onclick="updateOdds()">
+                        Update Odds
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- ========================= -->
+            <!-- 💰 WITHDRAWAL ADMIN PANEL -->
+            <!-- ========================= -->
+            <div class="card hidden" id="withdrawAdminPanel">
+
+                <div class="card-header">
+                    <h3 class="card-title">Withdrawal Requests</h3>
+                </div>
+
+                <div class="card-body" id="withdrawList">
+                    No requests yet
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="notifications"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
