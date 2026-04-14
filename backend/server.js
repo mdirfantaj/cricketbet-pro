@@ -17,7 +17,9 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000',
+             'https://cricketbet-faamf7amq-cricketbet-projects.vercel.app'
+    ],
     credentials: true
 }));
 
