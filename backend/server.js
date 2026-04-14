@@ -1,8 +1,11 @@
+require('dotenv').config(); // ✅ STEP 2 FIX (env load)
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { authMiddleware, roleMiddleware } = require('./middleware/auth');
+const morgan = require('morgan');          // ✅ logging
+const compression = require('compression'); // ✅ speed
 const routes = require('./routes');
 const { initializeDatabase } = require('./db');
 
@@ -16,10 +19,16 @@ app.use(cors({
     credentials: true
 }));
 
+// ✅ Logging (NEW)
+app.use(morgan('dev'));
+
+// ✅ Compression (NEW)
+app.use(compression());
+
 // Rate Limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    windowMs: 15 * 60 * 1000,
+    max: 100,
     message: { error: 'Too many requests, please try again later.' }
 });
 app.use('/api/', limiter);
