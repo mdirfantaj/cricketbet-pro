@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const { db } = require('../db');
 const { validationResult } = require('express-validator');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
+// ✅ STEP 3 FIX (NO default fallback)
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // JWT Verification Middleware
 const authMiddleware = (req, res, next) => {
