@@ -27,7 +27,7 @@ router.post('/login', [
         // Generate JWT
         const token = jwt.sign(
             { userId: user.id },
-            process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production',
+            process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
