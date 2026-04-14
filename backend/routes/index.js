@@ -1,7 +1,9 @@
 const express = require('express');
 const { body } = require('express-validator');
 const { authMiddleware, roleMiddleware, validateRequest } = require('../middleware/auth');
-const { db } = require('../db');
+const User = require('../models/User');
+const Match = require('../models/Match');
+const Bet = require('../models/Bet');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
