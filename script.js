@@ -72,6 +72,11 @@ const auth = {
     try {
       const data = await api.login(email, password);
 
+      if (!data.token) {
+        alert(data.error || "Login Failed");
+        return;
+      }
+
       state.user = data.user;
       state.token = data.token;
       state.isAuthenticated = true;
@@ -79,6 +84,8 @@ const auth = {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+
+      alert("Login Successful");
 
       ui.update();
       loadMatches();
@@ -166,11 +173,30 @@ async function updateOdds() {
 window.placeBet = placeBet;
 window.updateOdds = updateOdds;
 
-window.login = (e) => {
+// 🔥 FIX 1: LOGIN FORM CONNECT
+document.getElementById("loginForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  auth.login(email, password);
-};
 
-loadMatches();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.login(email, password);
+});
+
+// 🔥 FIX 2: AUTO LOGIN CHECK
+window.onload = () => {
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
+
+  if (token && user) {
+    state.token = token;
+    state.user = JSON.parse(user);
+    state.isAuthenticated = true;
+    state.balance = state.user.balance;
+
+    ui.update();
+    loadMatches();
+  } else {
+    loadMatches();
+  }
+};
