@@ -11,6 +11,48 @@ const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
+// =========================
+// 🔥 REGISTER (SIGNUP)
+// =========================
+router.post('/register', [
+    body('name').notEmpty(),
+    body('email').isEmail(),
+    body('password').isLength({ min: 6 })
+], validateRequest([
+    body('name'),
+    body('email'),
+    body('password')
+]), async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        // 🔥 CHECK EXISTING USER
+        const existing = await User.findOne({ email });
+        if (existing) {
+            return res.status(400).json({ error: 'User already exists' });
+        }
+
+        // 🔥 HASH PASSWORD
+        const hashedPassword = bcrypt.hashSync(password, 10);
+
+        // 🔥 CREATE USER
+        const user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            balance: 1000, // default balance
+            role: "user"
+        });
+
+        res.json({
+            success: true,
+            message: "User registered successfully"
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: 'Signup failed' });
+    }
+});
 
 // =========================
 // 🔥 LOGIN
