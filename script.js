@@ -64,6 +64,15 @@ const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     }).then(r => r.json());
+  },
+
+  // 🔥 SIGNUP API
+  signup(name, email, password) {
+    return fetch(CONFIG.API + '/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    }).then(r => r.json());
   }
 };
 
@@ -93,11 +102,6 @@ const auth = {
     } catch (err) {
       alert(err.message);
     }
-  },
-
-  logout() {
-    utils.clearAuth();
-    location.reload();
   }
 };
 
@@ -173,17 +177,54 @@ async function updateOdds() {
 window.placeBet = placeBet;
 window.updateOdds = updateOdds;
 
-// 🔥 FIX 1: LOGIN FORM CONNECT
+// 🔥 LOGIN FORM
 document.getElementById("loginForm").addEventListener("submit", (e) => {
   e.preventDefault();
-
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.login(email, password);
+  auth.login(
+    document.getElementById("email").value,
+    document.getElementById("password").value
+  );
 });
 
-// 🔥 FIX 2: AUTO LOGIN CHECK
+// 🔥 SIGNUP FORM
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+  try {
+    const data = await api.signup(name, email, password);
+
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    alert("Signup Successful 🎉");
+    showLogin();
+
+  } catch (err) {
+    alert("Signup Failed");
+  }
+});
+
+// 🔥 TOGGLE
+function showSignup() {
+  document.getElementById("loginSection").classList.add("hidden");
+  document.getElementById("signupSection").classList.remove("hidden");
+}
+
+function showLogin() {
+  document.getElementById("signupSection").classList.add("hidden");
+  document.getElementById("loginSection").classList.remove("hidden");
+}
+
+window.showSignup = showSignup;
+window.showLogin = showLogin;
+
+// 🔥 AUTO LOGIN
 window.onload = () => {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
@@ -195,8 +236,7 @@ window.onload = () => {
     state.balance = state.user.balance;
 
     ui.update();
-    loadMatches();
-  } else {
-    loadMatches();
   }
+
+  loadMatches();
 };
