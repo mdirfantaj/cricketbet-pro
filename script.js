@@ -36,7 +36,9 @@ const utils = {
     state.token = null;
     state.isAuthenticated = false;
     state.balance = 0;
-    localStorage.clear();
+
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 };
 
@@ -66,7 +68,6 @@ const api = {
     }).then(r => r.json());
   },
 
-  // 🔥 SIGNUP API
   signup(name, email, password) {
     return fetch(CONFIG.API + '/register', {
       method: 'POST',
@@ -113,13 +114,29 @@ const ui = {
   }
 };
 
+// 🔥 LOGOUT FIX ADDED
+function logout() {
+  utils.clearAuth();
+  ui.update();
+  window.location.reload();
+}
+
+// 🔥 MATCHES FIXED (MAIN ISSUE FIXED HERE)
 async function loadMatches() {
   try {
-    const data = await api.request('/matches');
-    state.matches = data;
+    const res = await fetch(CONFIG.API + '/matches', {
+      headers: state.token ? utils.getAuthHeaders() : {}
+    });
+
+    const data = await res.json();
+
+    console.log("MATCHES API:", data);
+
+    state.matches = Array.isArray(data) ? data : [];
     renderMatches();
+
   } catch (e) {
-    console.log(e.message);
+    console.log("MATCH ERROR:", e.message);
   }
 }
 
@@ -141,23 +158,28 @@ function renderMatches() {
 async function placeBet(matchId, odds) {
   const amount = prompt("Enter amount");
 
-  if (!amount || amount <= 0) return;
+  if (!amount || isNaN(amount)) return;
 
-  if (amount > state.balance) {
+  if (Number(amount) > state.balance) {
     alert("Insufficient balance");
     return;
   }
 
-  await api.request('/bet', {
-    method: 'POST',
-    body: JSON.stringify({ matchId, amount: Number(amount), odds })
-  });
+  try {
+    await api.request('/bet', {
+      method: 'POST',
+      body: JSON.stringify({ matchId, amount: Number(amount), odds })
+    });
 
-  state.balance -= amount;
-  document.getElementById('bal').innerText = "₹" + state.balance;
+    state.balance -= Number(amount);
+    document.getElementById('bal').innerText = "₹" + state.balance;
 
-  alert("Bet placed");
-  loadMatches();
+    alert("Bet placed");
+    loadMatches();
+
+  } catch (e) {
+    alert("Bet failed");
+  }
 }
 
 async function updateOdds() {
@@ -176,8 +198,12 @@ async function updateOdds() {
 
 window.placeBet = placeBet;
 window.updateOdds = updateOdds;
+window.logout = logout;
 
-// 🔥 LOGIN FORM
+// 🔥 CONNECT BUTTONS (IMPORTANT FIX)
+document.getElementById("logoutBtn")?.addEventListener("click", logout);
+
+// LOGIN FORM
 document.getElementById("loginForm").addEventListener("submit", (e) => {
   e.preventDefault();
   auth.login(
@@ -186,7 +212,7 @@ document.getElementById("loginForm").addEventListener("submit", (e) => {
   );
 });
 
-// 🔥 SIGNUP FORM
+// SIGNUP FORM
 document.getElementById("signupForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -194,23 +220,18 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   const email = document.getElementById("signupEmail").value;
   const password = document.getElementById("signupPassword").value;
 
-  try {
-    const data = await api.signup(name, email, password);
+  const data = await api.signup(name, email, password);
 
-    if (data.error) {
-      alert(data.error);
-      return;
-    }
-
-    alert("Signup Successful 🎉");
-    showLogin();
-
-  } catch (err) {
-    alert("Signup Failed");
+  if (data.error) {
+    alert(data.error);
+    return;
   }
+
+  alert("Signup Successful 🎉");
+  showLogin();
 });
 
-// 🔥 TOGGLE
+// TOGGLE
 function showSignup() {
   document.getElementById("loginSection").classList.add("hidden");
   document.getElementById("signupSection").classList.remove("hidden");
@@ -224,7 +245,7 @@ function showLogin() {
 window.showSignup = showSignup;
 window.showLogin = showLogin;
 
-// 🔥 AUTO LOGIN
+// AUTO LOGIN
 window.onload = () => {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
